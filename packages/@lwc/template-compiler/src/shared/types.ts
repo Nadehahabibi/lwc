@@ -108,9 +108,10 @@ export interface IRText {
     __original: HTMLText;
 }
 
+export type CommentParts = Array<string | TemplateExpression>;
 export interface IRComment {
     type: 'comment';
-    value: string;
+    parts: CommentParts;
 
     parent?: IRElement;
 

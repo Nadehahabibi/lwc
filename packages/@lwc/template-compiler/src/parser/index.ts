@@ -42,7 +42,7 @@ import {
 import { parseStyleText, parseClassNames } from './style';
 
 import * as t from '../shared/estree';
-import {createElement, isCustomElement, createText, createComment} from '../shared/ir';
+import { createElement, isCustomElement, createText, createComment } from '../shared/ir';
 import {
     IRElement,
     IRAttribute,
@@ -239,13 +239,49 @@ export default function parse(source: string, state: State): TemplateParseResult
 
         Comment: {
             enter(node: parse5.AST.Default.CommentNode) {
+                const location = node.__location as parse5.MarkupData.Location;
                 const rawComment = node.data;
-                const textNode = createComment(node, decodeTextContent(rawComment));
+                const tokenizedContent = rawComment.split(EXPRESSION_RE);
 
+                const commentParts = [];
+                // @todo: save also the dynamic parts of the comment
+                // const commentDynamicParts
+                // const currentIndex = 0;
+
+                for (const token of tokenizedContent) {
+                    // Don't create nodes for emtpy strings
+                    if (!token.length) {
+                        continue;
+                    }
+
+                    let value;
+                    if (isExpression(token)) {
+                        try {
+                            value = parseExpression(token, state);
+                        } catch (error) {
+                            addDiagnostic(
+                                normalizeToDiagnostic(
+                                    ParserDiagnostics.TEMPLATE_EXPRESSION_PARSING_ERROR,
+                                    error,
+                                    {
+                                        location: normalizeLocation(location),
+                                    }
+                                )
+                            );
+                            return;
+                        }
+                    } else {
+                        value = token;
+                    }
+
+                    commentParts.push(value);
+                }
+
+                const commentNode = createComment(node, commentParts);
                 // @todo: split the content into an array.
                 // @todo: the comment node should have 2 arrays: one raw values and the other the positions of the values.
-                textNode.parent = parent;
-                parent.children.push(textNode);
+                commentNode.parent = parent;
+                parent.children.push(commentNode);
                 //
                 //
                 // const rawText = cleanTextNode(source.slice(startOffset, endOffset));

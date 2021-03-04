@@ -21,7 +21,7 @@ export interface HostText {
 export interface HostComment {
     type: HostNodeType.Comment;
     parent: HostElement | null;
-    value: string;
+    parts: any[];
 }
 
 export interface HostAttribute {

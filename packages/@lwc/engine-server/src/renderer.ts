@@ -95,10 +95,10 @@ export const renderer: Renderer<HostNode, HostElement> = {
         };
     },
 
-    createComment(content: string): HostNode {
+    createComment(parts: any[]): HostNode {
         return {
             type: HostNodeType.Comment,
-            value: String(content),
+            parts,
             parent: null,
         };
     },

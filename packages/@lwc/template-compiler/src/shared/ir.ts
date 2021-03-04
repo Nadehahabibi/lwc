@@ -11,7 +11,9 @@ import {
     IRText,
     IRElement,
     HTMLElement,
-    HTMLText, HTMLComment, IRComment,
+    HTMLText,
+    HTMLComment,
+    IRComment,
 } from './types';
 
 export function createElement(tag: string, original: HTMLElement): IRElement {
@@ -33,11 +35,14 @@ export function createText(original: HTMLText, value: string | TemplateExpressio
     };
 }
 
-export function createComment(original: HTMLComment, value: string): IRComment {
+export function createComment(
+    original: HTMLComment,
+    parts: Array<string | TemplateExpression>
+): IRComment {
     return {
         type: 'comment',
         __original: original,
-        value,
+        parts,
     };
 }
 

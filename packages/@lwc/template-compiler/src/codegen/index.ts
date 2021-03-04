@@ -12,9 +12,16 @@ import { TemplateErrors, generateCompilerError } from '@lwc/errors';
 
 import State from '../state';
 
-import {isCommentNode, isCustomElement, isElement, isTextNode} from '../shared/ir';
+import { isCommentNode, isCustomElement, isElement, isTextNode } from '../shared/ir';
 import { TEMPLATE_PARAMS, TEMPLATE_FUNCTION_NAME } from '../shared/constants';
-import {IRNode, IRElement, IRText, IRAttribute, IRAttributeType, IRComment} from '../shared/types';
+import {
+    IRNode,
+    IRElement,
+    IRText,
+    IRAttribute,
+    IRAttributeType,
+    IRComment,
+} from '../shared/types';
 
 import CodeGen from './codegen';
 import { bindExpression } from './scope';
@@ -120,9 +127,13 @@ function transform(root: IRElement, codeGen: CodeGen, state: State): t.Expressio
     }
 
     function transformComment(comment: IRComment): t.Expression {
-        const { value } = comment;
+        const { parts } = comment;
+        const boundParts = parts.map((part) =>
+            typeof part === 'string' ? part : bindExpression(part, comment)
+        );
+
         // @todo: the comment value should be an array, of string or template expressions (-> bindExpression).
-        return codeGen.genComment(typeof value === 'string' ? value : bindExpression(value, comment));
+        return codeGen.genComment(boundParts);
     }
 
     function transformChildren(children: IRNode[]): t.Expression {

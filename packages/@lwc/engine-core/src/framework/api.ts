@@ -89,7 +89,7 @@ export interface RenderAPI {
     d(value: any): VNode | null;
     b(fn: EventListener): EventListener;
     k(compilerKey: number, iteratorValue: any): string | void;
-    co(comment: string): VComment;
+    co(parts: any[]): VComment;
 }
 
 const CHAR_S = 115;
@@ -118,7 +118,7 @@ const CommentHook: Hooks<VComment> = {
         const { owner } = vnode;
         const { renderer } = owner;
 
-        const elm = renderer.createComment(vnode.text!);
+        const elm = renderer.createComment(vnode.parts!);
         linkNodeToShadow(elm, owner);
         vnode.elm = elm;
     },
@@ -579,17 +579,17 @@ export function t(text: string): VText {
 }
 
 // [co]mment node
-export function co(text: string): VComment {
+export function co(parts: string[]): VComment {
     const data = EmptyObject;
-    let sel, children, key, elm;
+    let sel, children, key, elm, text;
     return {
         sel,
         data,
         children,
         text,
+        parts,
         elm,
         key,
-
         hook: CommentHook,
         owner: getVMBeingRendered()!,
     };

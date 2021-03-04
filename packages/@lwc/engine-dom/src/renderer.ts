@@ -97,8 +97,8 @@ export const renderer: Renderer<Node, Element> = {
         return document.createTextNode(content);
     },
 
-    createComment(content: string): Node {
-        return document.createComment(content);
+    createComment(parts: any[]): Node {
+        return document.createComment(parts.join(''));
     },
 
     insert(node: Node, parent: Node, anchor: Node): void {

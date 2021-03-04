@@ -29,7 +29,7 @@ function serializeChildNodes(children: HostChildNode[]): string {
                     // @todo: maybe this can be done in the process before this call?
                     // Ex: <i>{foo}</i> -> <i>htmlEscape(foo result:<p></p>)</i>
                     // what about <!--{foo}--> -> foo = [CDATA]?
-                    return `<!--${htmlEscape(child.value)}-->`;
+                    return `<!--${htmlEscape(child.parts.join(''))}-->`;
                 case HostNodeType.Element:
                     return serializeElement(child);
             }
