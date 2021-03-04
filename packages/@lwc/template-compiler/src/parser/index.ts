@@ -244,18 +244,18 @@ export default function parse(source: string, state: State): TemplateParseResult
                 const tokenizedContent = rawComment.split(EXPRESSION_RE);
 
                 const commentParts = [];
-                // @todo: save also the dynamic parts of the comment
-                // const commentDynamicParts
-                // const currentIndex = 0;
+                const commentDynamicParts = [];
+                let currentPartsIndex = 0;
 
                 for (const token of tokenizedContent) {
-                    // Don't create nodes for emtpy strings
+                    // Don't create nodes for empty strings
                     if (!token.length) {
                         continue;
                     }
 
                     let value;
                     if (isExpression(token)) {
+                        commentDynamicParts.push(currentPartsIndex);
                         try {
                             value = parseExpression(token, state);
                         } catch (error) {
@@ -275,55 +275,12 @@ export default function parse(source: string, state: State): TemplateParseResult
                     }
 
                     commentParts.push(value);
+                    currentPartsIndex++;
                 }
 
-                const commentNode = createComment(node, commentParts);
-                // @todo: split the content into an array.
-                // @todo: the comment node should have 2 arrays: one raw values and the other the positions of the values.
+                const commentNode = createComment(node, commentParts, commentDynamicParts);
                 commentNode.parent = parent;
                 parent.children.push(commentNode);
-                //
-                //
-                // const rawText = cleanTextNode(source.slice(startOffset, endOffset));
-                //
-                // if (!rawText.trim().length) {
-                //     return;
-                // }
-                //
-                // // Split the text node content arround expression and create node for each
-                // const tokenizedContent = rawText.split(EXPRESSION_RE);
-                //
-                // for (const token of tokenizedContent) {
-                //     // Don't create nodes for emtpy strings
-                //     if (!token.length) {
-                //         continue;
-                //     }
-                //
-                //     let value;
-                //     if (isExpression(token)) {
-                //         try {
-                //             value = parseExpression(token, state);
-                //         } catch (error) {
-                //             addDiagnostic(
-                //                 normalizeToDiagnostic(
-                //                     ParserDiagnostics.TEMPLATE_EXPRESSION_PARSING_ERROR,
-                //                     error,
-                //                     {
-                //                         location: normalizeLocation(location),
-                //                     }
-                //                 )
-                //             );
-                //             return;
-                //         }
-                //     } else {
-                //         value = decodeTextContent(token);
-                //     }
-                //
-                //     const textNode = createText(node, value);
-                //
-                //     textNode.parent = parent;
-                //     parent.children.push(textNode);
-                // }
             },
         },
     });

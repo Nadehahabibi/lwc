@@ -22,6 +22,7 @@ export interface HostComment {
     type: HostNodeType.Comment;
     parent: HostElement | null;
     parts: any[];
+    dynamicIndexes: number[];
 }
 
 export interface HostAttribute {

@@ -67,6 +67,7 @@ export interface VComment extends VNode {
     children: undefined;
     elm: Node | undefined;
     parts: any[];
+    dynamicIndexes: number[];
     key: undefined;
 }
 

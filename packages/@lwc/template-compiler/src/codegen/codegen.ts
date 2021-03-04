@@ -98,12 +98,15 @@ export default class CodeGen {
         }
     }
 
-    genComment(parts: Array<string | t.Expression>): t.Expression {
+    genComment(parts: Array<string | t.Expression>, dynamicIndexes: number[]): t.Expression {
         const transformedParts = parts.map((part) =>
             typeof part === 'string' ? t.literal(part) : part
         );
 
-        return this._renderApiCall(RENDER_APIS.comment, [t.arrayExpression(transformedParts)]);
+        return this._renderApiCall(RENDER_APIS.comment, [
+            t.arrayExpression(transformedParts),
+            t.arrayExpression(dynamicIndexes.map((idx) => t.literal(idx))),
+        ]);
     }
 
     genIterator(iterable: t.Expression, callback: t.FunctionExpression) {

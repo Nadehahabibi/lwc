@@ -14,6 +14,7 @@ import {
     HTMLText,
     HTMLComment,
     IRComment,
+    CommentParts,
 } from './types';
 
 export function createElement(tag: string, original: HTMLElement): IRElement {
@@ -37,12 +38,14 @@ export function createText(original: HTMLText, value: string | TemplateExpressio
 
 export function createComment(
     original: HTMLComment,
-    parts: Array<string | TemplateExpression>
+    parts: CommentParts,
+    dynamicIndexes: number[]
 ): IRComment {
     return {
         type: 'comment',
         __original: original,
         parts,
+        dynamicIndexes,
     };
 }
 

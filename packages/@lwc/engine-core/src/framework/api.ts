@@ -89,7 +89,7 @@ export interface RenderAPI {
     d(value: any): VNode | null;
     b(fn: EventListener): EventListener;
     k(compilerKey: number, iteratorValue: any): string | void;
-    co(parts: any[]): VComment;
+    co(parts: any[], dynamicIndexes: number[]): VComment;
 }
 
 const CHAR_S = 115;
@@ -117,8 +117,9 @@ const CommentHook: Hooks<VComment> = {
     create: (vnode) => {
         const { owner } = vnode;
         const { renderer } = owner;
+        const { parts, dynamicIndexes } = vnode;
 
-        const elm = renderer.createComment(vnode.parts!);
+        const elm = renderer.createComment(parts, dynamicIndexes);
         linkNodeToShadow(elm, owner);
         vnode.elm = elm;
     },
@@ -579,7 +580,7 @@ export function t(text: string): VText {
 }
 
 // [co]mment node
-export function co(parts: string[]): VComment {
+export function co(parts: any[], dynamicIndexes: number[]): VComment {
     const data = EmptyObject;
     let sel, children, key, elm, text;
     return {
@@ -588,6 +589,7 @@ export function co(parts: string[]): VComment {
         children,
         text,
         parts,
+        dynamicIndexes,
         elm,
         key,
         hook: CommentHook,

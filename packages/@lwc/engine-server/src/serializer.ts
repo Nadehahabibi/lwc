@@ -8,7 +8,14 @@
 import { isVoidElement } from '@lwc/shared';
 
 import { htmlEscape } from './utils/html-escape';
-import { HostElement, HostShadowRoot, HostAttribute, HostChildNode, HostNodeType } from './types';
+import {
+    HostElement,
+    HostShadowRoot,
+    HostAttribute,
+    HostChildNode,
+    HostNodeType,
+    HostComment,
+} from './types';
 
 function serializeAttributes(attributes: HostAttribute[]): string {
     return attributes
@@ -18,6 +25,15 @@ function serializeAttributes(attributes: HostAttribute[]): string {
         .join(' ');
 }
 
+function serializeComment(commentNode: HostComment) {
+    const { parts, dynamicIndexes } = commentNode;
+
+    const escapedParts = parts.map((part) => (part == undefined ? '' : String(part)));
+    dynamicIndexes.forEach((idx) => (escapedParts[idx] = htmlEscape(escapedParts[idx])));
+
+    return `<!--${escapedParts.join('')}-->`;
+}
+
 function serializeChildNodes(children: HostChildNode[]): string {
     return children
         .map((child) => {
@@ -25,11 +41,7 @@ function serializeChildNodes(children: HostChildNode[]): string {
                 case HostNodeType.Text:
                     return htmlEscape(child.value);
                 case HostNodeType.Comment:
-                    // @todo: only bound strings ({foo}) should be escaped, the ones from the comment are fine.
-                    // @todo: maybe this can be done in the process before this call?
-                    // Ex: <i>{foo}</i> -> <i>htmlEscape(foo result:<p></p>)</i>
-                    // what about <!--{foo}--> -> foo = [CDATA]?
-                    return `<!--${htmlEscape(child.parts.join(''))}-->`;
+                    return serializeComment(child);
                 case HostNodeType.Element:
                     return serializeElement(child);
             }

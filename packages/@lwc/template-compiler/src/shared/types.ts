@@ -112,6 +112,7 @@ export type CommentParts = Array<string | TemplateExpression>;
 export interface IRComment {
     type: 'comment';
     parts: CommentParts;
+    dynamicIndexes: number[];
 
     parent?: IRElement;
 

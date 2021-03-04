@@ -127,13 +127,12 @@ function transform(root: IRElement, codeGen: CodeGen, state: State): t.Expressio
     }
 
     function transformComment(comment: IRComment): t.Expression {
-        const { parts } = comment;
+        const { parts, dynamicIndexes } = comment;
         const boundParts = parts.map((part) =>
             typeof part === 'string' ? part : bindExpression(part, comment)
         );
 
-        // @todo: the comment value should be an array, of string or template expressions (-> bindExpression).
-        return codeGen.genComment(boundParts);
+        return codeGen.genComment(boundParts, dynamicIndexes);
     }
 
     function transformChildren(children: IRNode[]): t.Expression {

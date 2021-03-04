@@ -15,7 +15,7 @@ export interface Renderer<N = HostNode, E = HostElement> {
     remove(node: N, parent: E): void;
     createElement(tagName: string, namespace?: string): E;
     createText(content: string): N;
-    createComment(parts: any[]): N;
+    createComment(parts: any[], dynamicIndexes: number[]): N;
     nextSibling(node: N): N | null;
     attachShadow(element: E, options: ShadowRootInit): N;
     getProperty(node: N, key: string): any;
