@@ -1,6 +1,6 @@
 import { registerTemplate } from "lwc";
 function tmpl($api, $cmp, $slotset, $ctx) {
-  const { h: api_element } = $api;
+  const { h: api_element, co: api_comment } = $api;
   return [
     api_element(
       "svg",
@@ -22,6 +22,7 @@ function tmpl($api, $cmp, $slotset, $ctx) {
           },
           []
         ),
+        api_comment([" <clipPath></clipPath> "], []),
         api_element(
           "defs",
           {
@@ -134,6 +135,7 @@ function tmpl($api, $cmp, $slotset, $ctx) {
           },
           []
         ),
+        api_comment([" <textPath></textPath> "], []),
         api_element(
           "title",
           {
